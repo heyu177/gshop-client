@@ -17,13 +17,17 @@
 </template>
 
 <script>
-import ShopHeader from "../../components/ShopHeader/ShopHeader.vue";
+import ShopHeader from "../../components/ShopHeader/ShopHeader.vue"
+import data from '../../mock/data.json'
 
 export default {
+  mounted(){
+    this.$store.dispatch('getShopInfo')
+  },
   components: {
     ShopHeader
   }
-};
+}
 </script>
 
 <style lang="stylus">
