@@ -18,7 +18,6 @@
 
 <script>
 import ShopHeader from "../../components/ShopHeader/ShopHeader.vue"
-import data from '../../mock/data.json'
 
 export default {
   mounted(){
