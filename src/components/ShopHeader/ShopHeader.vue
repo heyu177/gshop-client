@@ -107,8 +107,8 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import { SIGHUP } from "constants";
+import { mapState } from "vuex"
+
 export default {
   data() {
     return {
