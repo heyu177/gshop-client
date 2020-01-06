@@ -43,12 +43,15 @@
 </template>
 
 <script>
+import BScroll from '@better-scroll/core'
 import {mapState} from 'vuex'
 
 export default {
   data(){
-    scrollY:0//右侧滑动的Y轴坐标
-    tops:[]//右侧所有分类li的top组成的数组
+    return{
+      scrollY:0,//右侧滑动的Y轴坐标
+      tops:[]//右侧所有分类li的top组成的数组
+    }
   },
   mounted(){
     this.$store.dispatch('getShopGoods')
@@ -58,7 +61,7 @@ export default {
     ...mapState(['goods']),
     //当前分类的下标
     currentIndex(){
-
+      return null
     }
   }
 }
