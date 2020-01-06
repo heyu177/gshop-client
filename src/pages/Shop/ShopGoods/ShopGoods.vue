@@ -1,24 +1,34 @@
 <template>
   <div>
     <div class="goods">
-      <div class="menu-wrapper" ref="menuWrapper">
+      <div class="menu-wrapper">
         <ul>
-          <li class="menu-item" v-for="(good,index) in goods" :key="index" :class="{current:index==currentIndex}">
+          <li
+            class="menu-item"
+            v-for="(good,index) in goods"
+            :key="index"
+            :class="{current:index==currentIndex}"
+            @click="clickMenuItem(index)"
+          >
             <span class="text bottom-border-1px">
-              <img class="icon" :src="good.icon" v-if="good.icon"/>
+              <img class="icon" :src="good.icon" v-if="good.icon" />
               {{good.name}}
             </span>
           </li>
         </ul>
       </div>
-      <div class="foods-wrapper" ref="foodsWrapper">
-        <ul>
+      <div class="foods-wrapper">
+        <ul ref="foodsUI">
           <li class="food-list-hook" v-for="(good,index) in goods" :key="index">
             <h1 class="title">{{good.name}}</h1>
             <ul>
-              <li class="food-item bottom-border-1px" v-for="(food,index) in good.foods" :key="index">
+              <li
+                class="food-item bottom-border-1px"
+                v-for="(food,index) in good.foods"
+                :key="index"
+              >
                 <div class="icon">
-                  <img width="57" height="57" :src="food.icon"/>
+                  <img width="57" height="57" :src="food.icon" />
                 </div>
                 <div class="content">
                   <h2 class="name">{{good.name}}</h2>
@@ -43,28 +53,80 @@
 </template>
 
 <script>
-import BScroll from '@better-scroll/core'
-import {mapState} from 'vuex'
+import BScroll from "@better-scroll/core";
+import { mapState } from "vuex";
 
 export default {
-  data(){
-    return{
-      scrollY:0,//右侧滑动的Y轴坐标
-      tops:[]//右侧所有分类li的top组成的数组
-    }
+  data() {
+    return {
+      scrollY: 0, //右侧滑动的Y轴坐标
+      tops: [] //右侧所有分类li的纵坐标组成的数组
+    };
   },
-  mounted(){
-    this.$store.dispatch('getShopGoods')
+  mounted() {
+    this.$store.dispatch("getShopGoods", () => {
+      this.$nextTick(() => {
+        //列表数据显示后执行
+        this.initScroll(); //初始化滚动
+        this.initTops(); //初始化tops
+      });
+    });
   },
 
-  computed:{
-    ...mapState(['goods']),
+  computed: {
+    ...mapState(["goods"]),
     //当前分类的下标
-    currentIndex(){
-      return null
+    currentIndex() {
+      const { scrollY, tops } = this;
+      const index = tops.findIndex((top, index) => {
+        return scrollY >= top && scrollY < tops[index + 1];
+      });
+      return index;
+    }
+  },
+
+  methods: {
+    initScroll() {
+      new BScroll(".menu-wrapper", {
+        click: true
+      });
+      this.foodsScroll = new BScroll(".foods-wrapper", {
+        probeType: 2,
+        click: true
+      });
+      //给右侧列表绑定scroll监听
+      this.foodsScroll.on("scroll", ({ x, y }) => {
+        this.scrollY = Math.abs(y);
+      });
+      //给右侧列表绑定scroll结束的监听
+      this.foodsScroll.on("scrollEnd", ({ x, y }) => {
+        this.scrollY = Math.abs(y);
+      });
+    },
+    initTops() {
+      //初始化tops
+      const tops = [];
+      let top = 0;
+      tops.push(top);
+      //找到所有分类的DOM对象
+      const lis = this.$refs.foodsUI.getElementsByClassName("food-list-hook");
+      Array.prototype.slice.call(lis).forEach(li => {
+        top += li.clientHeight;
+        tops.push(top);
+      });
+      this.tops = tops;
+    },
+    //点击左侧标题后滑动到指定位置
+    clickMenuItem(index) {
+      //得到右侧对应标题的坐标
+      const scrollY = this.tops[index]
+      //滑动到指定位置
+      this.foodsScroll.scrollTo(0, -scrollY, 300)
+      //左侧标题迅速改变颜色
+      this.scrollY=scrollY
     }
   }
-}
+};
 </script>
 
 <style lang="stylus">
