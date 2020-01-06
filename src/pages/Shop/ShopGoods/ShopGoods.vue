@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="goods">
-      <div class="menu-wrapper" ref="menuWrapper">
+      <div class="menu-wrapper">
         <ul>
           <li class="menu-item" v-for="(good,index) in goods" :key="index" :class="{current:index==currentIndex}">
             <span class="text bottom-border-1px">
@@ -11,8 +11,8 @@
           </li>
         </ul>
       </div>
-      <div class="foods-wrapper" ref="foodsWrapper">
-        <ul>
+      <div class="foods-wrapper">
+        <ul ref="foodsUI">
           <li class="food-list-hook" v-for="(good,index) in goods" :key="index">
             <h1 class="title">{{good.name}}</h1>
             <ul>
@@ -43,22 +43,65 @@
 </template>
 
 <script>
+import BScroll from '@better-scroll/core'
 import {mapState} from 'vuex'
 
 export default {
   data(){
-    scrollY:0//右侧滑动的Y轴坐标
-    tops:[]//右侧所有分类li的top组成的数组
+    return{
+      scrollY:0,//右侧滑动的Y轴坐标
+      tops:[]//右侧所有分类li的top组成的数组
+    }
   },
   mounted(){
-    this.$store.dispatch('getShopGoods')
+    this.$store.dispatch('getShopGoods',()=>{
+      this.$nextTick(()=>{//列表数据显示后执行
+        this.initScroll()//初始化滚动
+        this.initTops()//初始化tops
+      })
+    })
   },
 
   computed:{
     ...mapState(['goods']),
     //当前分类的下标
     currentIndex(){
+      const {scrollY,tops}=this
+      const index=tops.findIndex((top,index)=>{
+        return scrollY>=top&&scrollY<tops[index+1]
+      })
+      return index
+    }
+  },
 
+  methods:{
+    initScroll(){
+      new BScroll('.menu-wrapper')
+        const foodsScroll=new BScroll('.foods-wrapper',{
+          probeType:2
+        })
+        //给右侧列表绑定scroll监听
+        foodsScroll.on('scroll',({x,y})=>{
+            this.scrollY=Math.abs(y)
+        })
+        //给右侧列表绑定scroll结束的监听
+        foodsScroll.on('scrollEnd',({x,y})=>{
+          this.scrollY=Math.abs(y)
+        })
+    },
+    initTops(){
+      //初始化tops
+      const tops=[]
+      let top=0
+      tops.push(top)
+      //找到所有分类的DOM对象
+      const lis=this.$refs.foodsUI.getElementsByClassName('food-list-hook')
+      Array.prototype.slice.call(lis).forEach(li => {
+        top+=li.clientHeight
+        tops.push(top)
+      })
+      this.tops=tops
+      console.log(tops)
     }
   }
 }
