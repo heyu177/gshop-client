@@ -9,8 +9,11 @@ import {
     RESET_USER_INFO,
     RECEIVE_GOODS,
     RECEIVE_INFO,
-    RECEIVE_RATINGS
+    RECEIVE_RATINGS,
+    INCREMENT_FOOD_COUNT,
+    DECREMENT_FOOD_COUNT
 } from './mutation-types'
+import Vue from 'vue'
 export default{
     [RECEIVE_ADDRESS] (state,{address}){
         state.address=address
@@ -35,5 +38,18 @@ export default{
     },
     [RECEIVE_INFO] (state,{info}){
         state.info=info
+    },
+    [INCREMENT_FOOD_COUNT] (state,{food}){
+        if (!food.count) {//第一次增加
+            //food.count=1
+            Vue.set(food,'count',1)//对新增的属性进行数据绑定
+        } else {
+            food.count++
+        }
+    },
+    [DECREMENT_FOOD_COUNT] (state,{food}){
+        if (food.count) {//count不等于0
+            food.count--
+        }
     }
 }

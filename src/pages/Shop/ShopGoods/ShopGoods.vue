@@ -26,6 +26,7 @@
                 class="food-item bottom-border-1px"
                 v-for="(food,index) in good.foods"
                 :key="index"
+                @click="showFood(food)"
               >
                 <div class="icon">
                   <img width="57" height="57" :src="food.icon" />
@@ -41,26 +42,34 @@
                     <span class="now">￥{{food.price}}</span>
                     <span class="old" v-if="food.oddPrice">￥{{food.oddPrice}}</span>
                   </div>
-                  <div class="cartcontrol-wrapper">CartControl</div>
+                  <div class="cartcontrol-wrapper">
+                    <CartControl :food="food"/>
+                  </div>
                 </div>
               </li>
             </ul>
           </li>
         </ul>
       </div>
+      <ShopCart/>
     </div>
+    <Food :food="food" ref="food"/>
   </div>
 </template>
 
 <script>
 import BScroll from "@better-scroll/core";
 import { mapState } from "vuex";
+import CartControl from '../../../components/CartControl/CartControl.vue'
+import Food from '../../../components/Food/Food.vue'
+import ShopCart from '../../../components/ShopCart/ShopCart.vue'
 
 export default {
   data() {
     return {
       scrollY: 0, //右侧滑动的Y轴坐标
-      tops: [] //右侧所有分类li的纵坐标组成的数组
+      tops: [], //右侧所有分类li的纵坐标组成的数组
+      food:{}//需要在对话框显示的食物
     };
   },
   mounted() {
@@ -124,9 +133,19 @@ export default {
       this.foodsScroll.scrollTo(0, -scrollY, 300)
       //左侧标题迅速改变颜色
       this.scrollY=scrollY
+    },
+    showFood(food){
+      this.food=food
+      //显示对话框（父组件调用子组件的方法）
+      this.$refs.food.toggleShow()
     }
+  },
+  components:{
+    CartControl,
+    Food,
+    ShopCart
   }
-};
+}
 </script>
 
 <style lang="stylus">
