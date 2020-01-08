@@ -16,80 +16,82 @@
           <div class="pay" :class="payClass">{{payText}}</div>
         </div>
       </div>
-      <div class="shopcart-list" v-show="listShow">
-        <div class="list-header">
-          <h1 class="title">购物车</h1>
-          <span class="empty">清空</span>
+      <transition name="move">
+        <div class="shopcart-list" v-show="listShow">
+          <div class="list-header">
+            <h1 class="title">购物车</h1>
+            <span class="empty">清空</span>
+          </div>
+          <div class="list-content">
+            <ul>
+              <li class="food" v-for="(food,index) in cartFoods" :key="index">
+                <span class="name">{{food.name}}</span>
+                <div class="price">
+                  <span>￥{{food.price}}</span>
+                </div>
+                <div class="cartcontrol-wrapper">
+                  <CartControl :food="food" />
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div class="list-content">
-          <ul>
-            <li class="food" v-for="(food,index) in cartFoods" :key="index">
-              <span class="name">{{food.name}}</span>
-              <div class="price">
-                <span>￥{{food.price}}</span>
-              </div>
-              <div class="cartcontrol-wrapper">
-                <CartControl :food="food"/>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
+      </transition>
     </div>
     <div class="list-mask" v-show="listShow" @click="toggleShow"></div>
   </div>
 </template>
 
 <script>
-import {mapState,mapGetters} from 'vuex'
-import CartControl from '../CartControl/CartControl.vue'
+import { mapState, mapGetters } from "vuex";
+import CartControl from "../CartControl/CartControl.vue";
 
 export default {
-    data(){
-      return{
-        isShow:false
-      }
-    },
+  data() {
+    return {
+      isShow: false
+    };
+  },
 
-    computed:{
-        ...mapState(['cartFoods','info']),
-        ...mapGetters(['totalCount','totalPrice']),
-        payClass(){
-          const {totalPrice}=this
-          const {minPrice}=this.info
-          return totalPrice>=minPrice ? 'enough':'not-enough'
-        },
-        payText(){
-          const {totalPrice}=this
-          const {minPrice}=this.info
-          if (totalPrice==0) {
-            return `￥${minPrice}元起送`
-          }else if (totalPrice<minPrice) {
-            return `还差￥${minPrice-totalPrice}元起送`
-          }else{
-            return '结算'
-          }
-        },
-        listShow(){
-          //如果购物车中的数量为0，直接不显示
-          if (this.totalCount==0) {
-            this.isShow=false
-            return false
-          }
-          return this.isShow
-        }
+  computed: {
+    ...mapState(["cartFoods", "info"]),
+    ...mapGetters(["totalCount", "totalPrice"]),
+    payClass() {
+      const { totalPrice } = this;
+      const { minPrice } = this.info;
+      return totalPrice >= minPrice ? "enough" : "not-enough";
     },
-    methods:{
-      toggleShow(){
-        if (this.totalCount>0) {
-          this.isShow=!this.isShow
-        }
+    payText() {
+      const { totalPrice } = this;
+      const { minPrice } = this.info;
+      if (totalPrice == 0) {
+        return `￥${minPrice}元起送`;
+      } else if (totalPrice < minPrice) {
+        return `还差￥${minPrice - totalPrice}元起送`;
+      } else {
+        return "结算";
       }
     },
-    components:{
-      CartControl
+    listShow() {
+      //如果购物车中的数量为0，直接不显示
+      if (this.totalCount == 0) {
+        this.isShow = false;
+        return false;
+      }
+      return this.isShow;
     }
-}
+  },
+  methods: {
+    toggleShow() {
+      if (this.totalCount > 0) {
+        this.isShow = !this.isShow;
+      }
+    }
+  },
+  components: {
+    CartControl
+  }
+};
 </script>
 
 <style lang="stylus">
@@ -240,7 +242,7 @@ export default {
     transform: translateY(-100%);
 
     &.move-enter-active, &.move-leave-active {
-      transition: transform 0.3s;
+      transition: transform .3s;
     }
 
     &.move-enter, &.move-leave-to {
