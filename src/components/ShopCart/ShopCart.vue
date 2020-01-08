@@ -16,7 +16,7 @@
           <div class="pay" :class="payClass">{{payText}}</div>
         </div>
       </div>
-      <div class="shopcart-list" v-show="isShow">
+      <div class="shopcart-list" v-show="listShow">
         <div class="list-header">
           <h1 class="title">购物车</h1>
           <span class="empty">清空</span>
@@ -36,7 +36,7 @@
         </div>
       </div>
     </div>
-    <div class="list-mask" v-show="isShow" @click="toggleShow"></div>
+    <div class="list-mask" v-show="listShow" @click="toggleShow"></div>
   </div>
 </template>
 
@@ -69,11 +69,21 @@ export default {
           }else{
             return '结算'
           }
+        },
+        listShow(){
+          //如果购物车中的数量为0，直接不显示
+          if (this.totalCount==0) {
+            this.isShow=false
+            return false
+          }
+          return this.isShow
         }
     },
     methods:{
       toggleShow(){
-        this.isShow=!this.isShow
+        if (this.totalCount>0) {
+          this.isShow=!this.isShow
+        }
       }
     },
     components:{
