@@ -11,7 +11,8 @@ import {
     RECEIVE_INFO,
     RECEIVE_RATINGS,
     INCREMENT_FOOD_COUNT,
-    DECREMENT_FOOD_COUNT
+    DECREMENT_FOOD_COUNT,
+    CLEAR_CART
 } from './mutation-types'
 import Vue from 'vue'
 export default{
@@ -56,5 +57,10 @@ export default{
                 state.cartFoods.splice(state.cartFoods.indexOf(food),1)
             }
         }
+    },
+    [CLEAR_CART] (state){
+        //将购物车中的数量清0
+        state.cartFoods.forEach(food => food.count=0)
+        //清空购物车
     }
 }
