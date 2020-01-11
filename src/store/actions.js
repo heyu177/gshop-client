@@ -80,11 +80,12 @@ export default{
         }
     },
     //异步获取商家评价列表
-    async getShopRatings({commit}){
+    async getShopRatings({commit},callback){
         const result=await reqShopRatings()
         if (result.code==0) {
             const ratings=result.ratings
             commit(RECEIVE_RATINGS,{ratings})
+            callback&&callback()
         }
     },
     //异步获取商家商品列表
