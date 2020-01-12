@@ -12,7 +12,8 @@ import {
     RECEIVE_RATINGS,
     INCREMENT_FOOD_COUNT,
     DECREMENT_FOOD_COUNT,
-    CLEAR_CART
+    CLEAR_CART,
+    RECEIVE_SEARCH_SHOPS
 } from './mutation-types'
 import Vue from 'vue'
 export default{
@@ -62,5 +63,8 @@ export default{
         //将购物车中的数量清0
         state.cartFoods.forEach(food => food.count=0)
         //清空购物车
+    },
+    [RECEIVE_SEARCH_SHOPS] (state,{searchShops}){
+        state.searchShops=searchShops
     }
 }
