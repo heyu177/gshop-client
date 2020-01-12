@@ -1,8 +1,8 @@
 <template>
   <section class="search">
     <HeaderTop title="搜索"/>
-    <form class="search_form">
-      <input type="search" placeholder=" 请输入商家名称" class="search_input" />
+    <form class="search_form" @submit.prevent="search">
+      <input type="search" placeholder=" 请输入商家名称" class="search_input" v-model="keyword"/>
       <input type="submit" class="search_submit" />
     </form>
     <section class="list">
@@ -43,8 +43,23 @@
 <script>
 import HeaderTop from "../../components/HeaderTop/HeaderTop.vue";
 export default {
+  data(){
+    return{
+      keyword:''
+    }
+  },
+
   components: {
     HeaderTop
+  },
+
+  methods:{
+    search(){
+      const keyword=this.keyword.trim()
+      if (keyword) {
+        this.$store.dispatch('searchShops',keyword)
+      }
+    }
   }
 };
 </script>
