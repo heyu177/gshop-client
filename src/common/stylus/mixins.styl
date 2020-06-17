@@ -27,14 +27,14 @@ top-border-1px($color)
         height 1px
         background-color $color
 // 根据像素比缩放 1px 像素边框
-@media only screen and (-webkit-device-pixel-ratio: 2 )
+/* @media only screen and (-webkit-device-pixel-ratio: 2 )
     .border-1px
     &::before
-        transform scaleY(.5)
-@media only screen and (-webkit-device-pixel-ratio: 3 )
+        transform scaleY(.5) */
+/* @media only screen and (-webkit-device-pixel-ratio: 3 )
     .border-1px
     &::before
-        transform scaleY(.333333)
+        transform scaleY(.333333) */
 // 根据像素比来使用 2x 图 3x 图
 bg-image($url)
     background-image: url($url + "@2x.png")
